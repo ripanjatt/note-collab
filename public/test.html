@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test</title>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <style>
+      input,
+      button {
+        margin-bottom: 8px;
+        width: 80%;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      style="
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+      "
+    >
+      <input id="token" type="text" placeholder="Enter token" />
+      <input
+        id="noteId"
+        type="text"
+        placeholder="Enter noteId"
+        value="dc5fd095-5380-4a4e-828e-84053d64aa01"
+      />
+      <button id="connect">Connect</button>
+
+      <span id="currentUser">Not connected yet</span>
+
+      <textarea
+        placeholder="Type here..."
+        style="height: 60vh; width: 80%"
+        id="area"
+      ></textarea>
+    </div>
+    <script>
+      let userToken = '';
+      let currentNote = '';
+
+      const socket = io('http://localhost:8082');
+
+      socket.on('noteOpened', (data) => {
+        document.getElementById(
+          'currentUser',
+        ).innerText = `Connected as ${data.userId}`;
+        document.getElementById('connect').setAttribute('disabled', 'disabled');
+        document.getElementById('area').value = data.content;
+      });
+
+      socket.on('contentUpdate', (data) => {
+        // console.log('Content update:', data);
+        document.getElementById('area').value = data.content;
+      });
+
+      socket.on('newUser', (data) => {
+        // console.log(data);
+      });
+
+      socket.on('userLeft', (data) => {
+        // console.log(data);
+      });
+
+      let bouncer = null;
+      document.getElementById('area').oninput = (e) => {
+        if (bouncer) {
+          clearInterval(bouncer);
+        }
+        bouncer = setTimeout(() => {
+          socket.emit('contentChange', {
+            token: userToken,
+            noteId: currentNote,
+            content: e.target.value,
+          });
+        }, 250);
+      };
+
+      document.getElementById('connect').onclick = () => {
+        let token = document.getElementById('token').value;
+        let noteId = document.getElementById('noteId').value;
+
+        if (token && noteId) {
+          userToken = token;
+          currentNote = noteId;
+
+          socket.emit('openNote', {
+            noteId: currentNote,
+            token: userToken,
+          });
+        }
+      };
+    </script>
+  </body>
+</html>
