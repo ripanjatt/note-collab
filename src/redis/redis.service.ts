@@ -14,6 +14,7 @@ export const connectToRedis = async () => {
       host: process.env.REDIS_HOST,
       port: parseInt(process.env.REDIS_PORT),
     },
+    password: process.env.REDIS_PASSWORD,
   });
   redis.on('error', (err) => {
     LogUtil.error(`Failed to connect to Redis: ${err}`);
