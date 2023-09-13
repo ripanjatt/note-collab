@@ -19,14 +19,15 @@ const handleOpenNote = async (data: OpenNoteDTO, socket: Socket) => {
     const userId = getUserId(data.token);
     const isAllowed = await isUserAllowed(data.noteId, userId);
     if (isAllowed) {
-      LogUtil.debug(`Opening note: ${data.noteId}`);
-
       joinRoom(data.noteId, socket);
 
       notifyNewUser(data.noteId, userId, socket);
 
       const content = await getContent(data.noteId);
 
+      /**
+       * Sends note's content back to the user
+       */
       socket.emit('noteOpened', {
         content: content,
         noteId: data.noteId,
