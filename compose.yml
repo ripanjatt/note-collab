@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: test-user
+      MONGO_INITDB_ROOT_PASSWORD: Vk632bg
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning --requirepass a4b06896-b99c-416d-81c5-8b283b491403
+  note-collab:
+    container_name: note-collab
+    build:
+      context: ./
+      target: production
+    image: note-collab
+    ports:
+      - '8081:8081'
+    depends_on:
+      - mongo
+      - redis

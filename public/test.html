@@ -43,7 +43,7 @@
       let userToken = '';
       let currentNote = '';
 
-      const socket = io('http://localhost:8082');
+      const socket = io('http://localhost:8081');
 
       socket.on('noteOpened', (data) => {
         document.getElementById(
