@@ -296,4 +296,11 @@ export const deleteNoteInDB = async (dto: DeleteNoteDTO) => {
     LogUtil.error(err);
     throw new InternalServerErrorException('Failed to delete Note!');
   });
+
+  const user = await getUser({ userId: note.user });
+  user.notes = user.notes.filter((elem) => elem != note.noteId);
+  await user.save().catch((err) => {
+    LogUtil.error(err);
+    throw new InternalServerErrorException('Failed to update User notes!');
+  });
 };
