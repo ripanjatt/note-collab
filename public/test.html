@@ -69,7 +69,7 @@
       let bouncer = null;
       document.getElementById('area').oninput = (e) => {
         if (bouncer) {
-          clearInterval(bouncer);
+          clearTimeout(bouncer);
         }
         bouncer = setTimeout(() => {
           socket.emit('contentChange', {
