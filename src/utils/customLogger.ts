@@ -10,16 +10,16 @@ const logger = new Logger('Node-Test', {
  * Methods include log, debug, error, which take one parameter message: any
  *
  */
-export class LogUtil {
-  static log = (message: any) => {
+export namespace LogUtil {
+  export const log = (message: any) => {
     logger.log(message);
   };
 
-  static debug = (message: any) => {
+  export const debug = (message: any) => {
     logger.debug(message);
   };
 
-  static error = (message: any) => {
+  export const error = (message: any) => {
     logger.error(message);
   };
 }
